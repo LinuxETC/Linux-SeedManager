@@ -1,7 +1,7 @@
 #!/usr/bin/perl
-#    This file is part of IFMI PoolManager.
+#    This file is part of IFMI SeedManager.
 #
-#    PoolManager is distributed in the hope that it will be useful,
+#    SeedManager is distributed in the hope that it will be useful,
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #    GNU General Public License for more details.
@@ -19,7 +19,7 @@ use Try::Tiny;
 require '/opt/ifmi/pm-common.pl';
 my $conf = &getConfig;
 my %conf = %{$conf};
-my $conffile = "/opt/ifmi/poolmanager.conf";
+my $conffile = "/opt/ifmi/seedmanager.conf";
 my $miner_name = `hostname`;
 chomp $miner_name;
 my $nicget = `/sbin/ifconfig`; 
@@ -37,143 +37,76 @@ sub doEmail {
 		if ($ispriv ne "S") {
 			$msg .= "No miner data available - mining process may be stopped or hung!\n";
 		} else {
-			my $temphi = $conf{monitoring}{monitor_temp_hi};
-			my $templo = $conf{monitoring}{monitor_temp_lo};
+
 			my $hashlo = $conf{monitoring}{monitor_hash_lo};
-			my $loadlo = $conf{monitoring}{monitor_load_lo};
 			my $rejhi = $conf{monitoring}{monitor_reject_hi};
-			my $fanlo = $conf{monitoring}{monitor_fan_lo};
-			my $fanhi = $conf{monitoring}{monitor_fan_hi};
-			my @gpus = &getFreshGPUData(1);
-			for (my $i=0;$i<@gpus;$i++) {
-				my $gpuid = "GPU$i";
+
+			my @ascs = &getFreshASCData(1);
+			for (my $i=0;$i<@ascs;$i++) {
+				my $ascid = "ASC$i";
 				# stuff with settings
-				if ($gpus[$i]{'current_temp_0_c'} > $conf{monitoring}{monitor_temp_hi}) {
-					if (!(defined($conf{monitoring}{alert}{$gpuid}{temphi}))) {
-						$msg .= "$gpuid temp is: $gpus[$i]{'current_temp_0_c'}C. ";
-						$msg .= "Alert level is: $conf{monitoring}{monitor_temp_hi}C\n";
-						$conf{monitoring}{alert}{$gpuid}{temphi} = 1;
-					}
-				} else {
-					if (defined($conf{monitoring}{alert}{$gpuid}{temphi})) {
-						$msg .= "$gpuid temp is: $gpus[$i]{'current_temp_0_c'}C. ";
-						$msg .= "Alert has cleared.\n";
-						delete $conf{monitoring}{alert}{$gpuid}{temphi}; 
-					}
-				}
-				if ($gpus[$i]{'current_temp_0_c'} < $conf{monitoring}{monitor_temp_lo}) { 
-					if (!(defined($conf{monitoring}{alert}{$gpuid}{templo}))) {
-						$msg .= "$gpuid temp is: $gpus[$i]{'current_temp_0_c'}C. ";
-						$msg .= "Alert level is: $conf{monitoring}{monitor_temp_lo}C\n";
-						$conf{monitoring}{alert}{$gpuid}{templo} = 1; 
-					}
-				} else {
-					if (defined($conf{monitoring}{alert}{$gpuid}{templo})) {
-						$msg .= "$gpuid temp is: $gpus[$i]{'current_temp_0_c'}C. ";
-						$msg .= "Alert has cleared.\n";
-						delete $conf{monitoring}{alert}{$gpuid}{templo}; 
-					}
-				}
-				my $frpm = $gpus[$i]{'fan_rpm_c'}; $frpm = "0" if ($frpm eq "");
-				if (($frpm < $conf{monitoring}{monitor_fan_lo}) && ($frpm > 0)) {
-					if (!(defined($conf{monitoring}{alert}{$gpuid}{fanlo}))) {
-						$msg .= "$gpuid fan is: $gpus[$i]{'fan_rpm_c'}RPM. ";
-						$msg .= "Alert level is: $conf{monitoring}{monitor_fan_lo} RPM\n";
-						$conf{monitoring}{alert}{$gpuid}{fanlo} = 1;
-					}
-				} else {
-					if (defined($conf{monitoring}{alert}{$gpuid}{fanlo})) {
-						$msg .= "$gpuid fan is: $gpus[$i]{'fan_rpm_c'}RPM. ";
-						$msg .= "Alert has cleared.\n";
-						delete $conf{monitoring}{alert}{$gpuid}{fanlo};
-					}
-				}
-				if (($frpm > $conf{monitoring}{monitor_fan_hi}) && ($frpm > 0)) {
-					if (!(defined($conf{monitoring}{alert}{$gpuid}{fanhi}))) {
-						$msg .= "$gpuid fan is: $gpus[$i]{'fan_rpm_c'}RPM. ";
-						$msg .= "Alert level is: $conf{monitoring}{monitor_fan_hi}RPM\n";
-						$conf{monitoring}{alert}{$gpuid}{fanhi} = 1;
-					}
-				} else {
-					if (defined($conf{monitoring}{alert}{$gpuid}{fanhi})) {
-						$msg .= "$gpuid fan is: $gpus[$i]{'fan_rpm_c'}RPM. ";
-						$msg .= "Alert has cleared.\n";
-						delete $conf{monitoring}{alert}{$gpuid}{fanhi};
-					}
-				}
+
 				my $rr = "0";
-				my $gsha = $gpus[$i]{'shares_accepted'};
-				my $gshr = $gpus[$i]{'shares_invalid'}; $gshr = 0 if ($gshr eq "");
+				my $gsha = $ascs[$i]{'shares_accepted'};
+				my $gshr = $ascs[$i]{'shares_invalid'}; $gshr = 0 if ($gshr eq "");
 				if ($gshr > 0) {
 			      $rr = sprintf("%.2f", $gshr / ($gsha + $gshr)*100);
 				}
 				if (($gsha > 0) && ($rr > ${$conf}{monitoring}{monitor_reject_hi})) {
-					if (!(defined($conf{monitoring}{alert}{$gpuid}{rejhi}))) {
-						$msg .= "$gpuid reject rate is: $rr%. ";
+					if (!(defined($conf{monitoring}{alert}{$ascid}{rejhi}))) {
+						$msg .= "$ascid reject rate is: $rr%. ";
 						$msg .= "Alert level is: $conf{monitoring}{monitor_reject_hi}%\n";
-						$conf{monitoring}{alert}{$gpuid}{rejhi} = 1; 
+						$conf{monitoring}{alert}{$ascid}{rejhi} = 1; 
 					}
 				} else {
-					if (defined($conf{monitoring}{alert}{$gpuid}{rejhi})) {
-						$msg .= "$gpuid reject rate is: $rr%. ";
+					if (defined($conf{monitoring}{alert}{$ascid}{rejhi})) {
+						$msg .= "$ascid reject rate is: $rr%. ";
 						$msg .= "Alert has cleared.\n";
-						delete $conf{monitoring}{alert}{$gpuid}{rejhi}; 
+						delete $conf{monitoring}{alert}{$ascid}{rejhi}; 
 					}
 				}
 
-				if ($gpus[$i]{'current_load_c'} < $conf{monitoring}{monitor_load_lo}) { 
-					if (!(defined($conf{monitoring}{alert}{$gpuid}{loadlo}))) {
-						$msg .= "$gpuid load is: $gpus[$i]{'current_load_c'}. ";
-						$msg .= "Alert level is: $conf{monitoring}{monitor_load_lo}\n";
-						$conf{monitoring}{alert}{$gpuid}{loadlo} = 1;						
-					}
-				} else {
-					if (defined($conf{monitoring}{alert}{$gpuid}{loadlo})) {
-						$msg .= "$gpuid load is: $gpus[$i]{'current_load_c'}. ";
-						$msg .= "Alert has cleared.\n";
-						delete $conf{monitoring}{alert}{$gpuid}{loadlo}; 
-					}
-				}
-				my $ghashrate = $gpus[$i]{'hashrate'}; 
-				$ghashrate = $gpus[$i]{'hashavg'} if ($ghashrate eq "");
+
+				my $ghashrate = $ascs[$i]{'hashrate'}; 
+				$ghashrate = $ascs[$i]{'hashavg'} if ($ghashrate eq "");
 				if ($ghashrate < $conf{monitoring}{monitor_hash_lo}) { 
-					if (!(defined($conf{monitoring}{alert}{$gpuid}{hashlo}))) {
-						$msg .= "$gpuid hashrate is: $ghashrate Kh/s. ";
+					if (!(defined($conf{monitoring}{alert}{$ascid}{hashlo}))) {
+						$msg .= "$ascid hashrate is: $ghashrate Kh/s. ";
 						$msg .= "Alert level is: $conf{monitoring}{monitor_hash_lo}Kh/s\n";
-						$conf{monitoring}{alert}{$gpuid}{hashlo} = 1;
+						$conf{monitoring}{alert}{$ascid}{hashlo} = 1;
 					}
 				} else {
-					if (defined($conf{monitoring}{alert}{$gpuid}{hashlo})) {
-						$msg .= "$gpuid hashrate is: $ghashrate Kh/s. ";
+					if (defined($conf{monitoring}{alert}{$ascid}{hashlo})) {
+						$msg .= "$ascid hashrate is: $ghashrate Kh/s. ";
 						$msg .= "Alert has cleared.\n";
-						delete $conf{monitoring}{alert}{$gpuid}{hashlo}; 
+						delete $conf{monitoring}{alert}{$ascid}{hashlo}; 
 					}
 				}
 				# stuff without settings
-				my $ghealth = $gpus[$i]{'status'}; 
+				my $ghealth = $ascs[$i]{'status'}; 
 		    	if ($ghealth ne "Alive") {
-						if (!(defined($conf{monitoring}{alert}{$gpuid}{health}))) {		    		
-		    			$msg .= "$gpuid health is: $ghealth.\n";
-			    		$conf{monitoring}{alert}{$gpuid}{health} = 1; 
+						if (!(defined($conf{monitoring}{alert}{$ascid}{health}))) {		    		
+		    			$msg .= "$ascid health is: $ghealth.\n";
+			    		$conf{monitoring}{alert}{$ascid}{health} = 1; 
 		    		}
 		    	} else {
-						if (defined($conf{monitoring}{alert}{$gpuid}{health})) {		    		
-		    			$msg .= "$gpuid health is: $ghealth. ";
+						if (defined($conf{monitoring}{alert}{$ascid}{health})) {		    		
+		    			$msg .= "$ascid health is: $ghealth. ";
 							$msg .= "Alert has cleared.\n";
-							delete $conf{monitoring}{alert}{$gpuid}{health}; 
+							delete $conf{monitoring}{alert}{$ascid}{health}; 
 						}
 		    	}
-		    my $ghwe = $gpus[$i]{'hardware_errors'};	
+		    my $ghwe = $ascs[$i]{'hardware_errors'};	
 				if ($ghwe > 0) { 
-					if (!(defined($conf{monitoring}{alert}{$gpuid}{health}))) {		    		
-						$msg .= "$gpuid has $ghwe Hardware Errors.\n";
-						$conf{monitoring}{alert}{$gpuid}{health} = 1; 
+					if (!(defined($conf{monitoring}{alert}{$ascid}{health}))) {		    		
+						$msg .= "$ascid has $ghwe Hardware Errors.\n";
+						$conf{monitoring}{alert}{$ascid}{health} = 1; 
 					}
 				} else {
-					if (defined($conf{monitoring}{alert}{$gpuid}{health})) {		    		
-						$msg .= "$gpuid has $ghwe Hardware Errors. ";
+					if (defined($conf{monitoring}{alert}{$ascid}{health})) {		    		
+						$msg .= "$ascid has $ghwe Hardware Errors. ";
 						$msg .= "Alert has cleared.\n";
-						delete $conf{monitoring}{alert}{$gpuid}{health}; 
+						delete $conf{monitoring}{alert}{$ascid}{health}; 
 					}
 				}
 			}
@@ -187,8 +120,8 @@ sub doEmail {
      					$shorturl = $2;
   				}
 					my $pactive = 0; 
-					for (my $g=0;$g<@gpus;$g++) {
-						if ($pname eq $gpus[$g]{'pool_url'}) {
+					for (my $g=0;$g<@ascs;$g++) {
+						if ($pname eq $ascs[$g]{'pool_url'}) {
 							$pactive++;
 						}
 					}						
