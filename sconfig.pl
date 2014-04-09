@@ -17,12 +17,7 @@ my $conffile = "/opt/ifmi/seedmanager.conf";
 if (! -f $conffile) { 
   my $nconf = {
   	monitoring => {
-  		monitor_temp_hi => '80',
-  		monitor_temp_lo => '45',
-  		monitor_load_lo => '0',
-  		monitor_hash_lo => '200',
-  		monitor_fan_lo => '1000',
-      monitor_fan_hi => '4000',
+   		monitor_hash_lo => '200',
   		monitor_reject_hi => '3',
       do_email => '0',
   	},
@@ -48,13 +43,6 @@ if (! -f $conffile) {
   		usehashavg => '0',
       pmversion => "$version",
   	},
-  	farmview => {
-  		do_bcast_status => '1',
-  		do_farmview => '1',
-  		status_port => '54545',
-  		listen_port => '54545',
-      do_direct_status => '',
-  	},
     email => {
       smtp_to => 'root@localhost', 
       smtp_host => 'localhost',
@@ -79,35 +67,10 @@ if (-o $conffile) {
   $mconf->{display}->{pmversion} = $version if ($version ne $curver);
   our %in;
   if (&ReadParse(%in)) {
-    my $nht = $in{'temphi'};
-    if((defined $nht) && ($nht ne "")) {
-      $nht = "80" if (! ($nht =~ m/^\d+?$/));    
-      $mconf->{monitoring}->{monitor_temp_hi} = $nht;
-    }
-    my $nlt = $in{'templo'};
-    if((defined $nlt) && ($nlt ne "")) {
-      $nlt = "45" if (! ($nlt =~ m/^\d+?$/));
-      $mconf->{monitoring}->{monitor_temp_lo} = $nlt;
-    }
-    my $nll = $in{'loadlo'};
-    if((defined $nll) && ($nll ne "")) {
-      $nll = "10" if (! ($nll =~ m/^\d+?$/));
-      $mconf->{monitoring}->{monitor_load_lo} = $nll; 
-    }
     my $nhl = $in{'hashlo'};
     if((defined $nhl) && ($nhl ne "")) {
       $nhl = "200" if (! ($nhl =~ m/^\d+?$/));
       $mconf->{monitoring}->{monitor_hash_lo} = $nhl;
-    }
-    my $nfl = $in{'fanlo'};
-    if((defined $nfl) && ($nfl ne "")) {
-      $nfl = "1000" if (! ($nfl =~ m/^\d+?$/));
-      $mconf->{monitoring}->{monitor_fan_lo} = $nfl;
-    }
-    my $nfh = $in{'fanhi'};
-    if((defined $nfh) && ($nfh ne "")) {
-      $nfh = "4000" if (! ($nfh =~ m/^\d+?$/));
-      $mconf->{monitoring}->{monitor_fan_hi} = $nfh;
     }
     my $nrh = $in{'rejhi'};
     if((defined $nrh) && ($nrh ne "")) {
@@ -223,11 +186,6 @@ if (-o $conffile) {
     $mconf->{display}->{miner_loc} = $nml if((defined $nml) && ($nml ne ""));
     my $nscss = $in{'scss'};
     $mconf->{display}->{status_css} = $nscss if(defined $nscss);
-    my $nfcss = $in{'fcss'};
-    if(defined $nfcss) {
-      $mconf->{display}->{farmview_css} = $nfcss;
-      `touch /tmp/rfv`;
-    }
     my $ngcf = $in{'gcf'};
     $mconf->{display}->{graphcolors} = $ngcf if(defined $ngcf);
     my $nha = $in{'hashavg'};
@@ -242,16 +200,6 @@ if (-o $conffile) {
       $nbp = "54545" if (! ($nbp =~ m/^\d+?$/));    
       $mconf->{farmview}->{status_port} = $nbp;
     }
-    my $nfarmview = $in{'farmview'};
-    $mconf->{farmview}->{do_farmview} = $nfarmview if(defined $nfarmview);
-    my $nlp = $in{'nlp'};
-    if((defined $nlp) && ($nlp ne "")) {
-      $nlp = "54545" if (! ($nlp =~ m/^\d+?$/));    
-      $mconf->{farmview}->{listen_port} = $nlp;
-      `touch /tmp/rfv`;
-    }
-    my $dds = $in{'dds'};
-    $mconf->{farmview}->{do_direct_status} = $dds if((defined $dds) && ($dds ne ""));
 
     my $nst = $in{'mailto'};
     $mconf->{email}->{smtp_to} = $nst if ((defined $nst) && ($nst ne ""));
@@ -455,27 +403,15 @@ print "</td></tr><tr><td rowspan=2 align=center valign=top>";
 print "<form name=monitoring method=post>";
 print "<table class=monitor><tr><td colspan=2 class=header>Monitoring Settings</td>";
 print "<td class=header><input type='submit' value='Save'></td><tr>";
-my $temphi = $mconf->{monitoring}->{monitor_temp_hi};
-print "<tr><td>High Temp</td><td>$temphi C</td>";
-print "<td><input type='text' size='2' placeholder='80' name='temphi'></td></tr>";
-my $templo = $mconf->{monitoring}->{monitor_temp_lo};
-print "<tr><td>Low Temp</td><td>$templo C</td>";
-print "<td><input type='text' size='2' placeholder='45' name='templo'></td></tr>";
+
 my $hashlo = $mconf->{monitoring}->{monitor_hash_lo};
 print "<tr><td>Low Hashrate</td><td>$hashlo Kh/s</td>";
 print "<td><input type='text' size='3' placeholder='200' name='hashlo'></td></tr>";
-my $loadlo = $mconf->{monitoring}->{monitor_load_lo};
-print "<tr><td>Low Load</td><td>$loadlo</td>";
-print "<td><input type='text' size='2' placeholder='0' name='loadlo'></td></tr>";
+
 my $rejhi = $mconf->{monitoring}->{monitor_reject_hi};
 print "<tr><td>High Reject Rate</td><td>$rejhi%</td>";
 print "<td><input type='text' size='2' placeholder='3' name='rejhi'></td></tr>";
-my $fanlo = $mconf->{monitoring}->{monitor_fan_lo};
-print "<tr><td>Low Fanspeed</td><td>$fanlo RPM</td>";
-print "<td><input type='text' size='4' placeholder='1000' name='fanlo'></td></tr>";
-my $fanhi = $mconf->{monitoring}->{monitor_fan_hi};
-print "<tr><td>High Fanspeed</td><td>$fanhi RPM</td>";
-print "<td><input type='text' size='4' placeholder='4000' name='fanhi'></td></tr>";
+
 my $emaildo = $mconf->{monitoring}->{do_email};
 print "<tr><td>Send Email</td>";
 if ($emaildo==1) {
@@ -552,25 +488,6 @@ my $statport = $mconf->{farmview}->{status_port};
 print "<tr><td>Broadcast Port</td>";
 print "<td><i>Port to send status on</i></td>";
 print "<td>$statport <input type='text' size='5' placeholder='54545' name='nbp'></td></tr>";
-my $directip = $mconf->{farmview}->{do_direct_status};
-print "<tr><td>FarmView IP</td>";
-print "<td><i>Only needed if FV is not local</i></td>";
-print "<td>$directip <input type='text' size='15' placeholder='192.168.5.100' name='dds'></td></tr>";
-my $dfarm = $mconf->{farmview}->{do_farmview};
-print "<tr><td>FarmView</td>";
-print "<td><i>Run FarmView on this node?</i></td>";
-if ($dfarm==1) {
-  print "<td><input type='radio' value='1' name='farmview' checked>Yes";
-  print "<input type='radio' value='0' name='farmview'>No</td>";
-} else { 
-  print "<td><input type='radio' value='1' name='farmview'>Yes";
-  print "<input type='radio' value='0' name='farmview' checked>No</td>";
-}
-print "</tr>";
-my $lport = $mconf->{farmview}->{listen_port};
-print "<tr><td>Listen Port</td>";
-print "<td><i>Port FV should listen on<br><small>FV will restart if changed</small></i></td>";
-print "<td>$lport <input type='text' size='5' placeholder='54545' name='nlp'></td></tr>";
 print "</table></form>";
 
 print "</td></tr><tr><td align=center>";
@@ -595,19 +512,7 @@ my @csslist = glob("/var/www/IFMI/themes/*.css");
         }
     }
 print "</select></td></tr>";
-my $farm_css = $mconf->{display}->{farmview_css}; 
-print "<tr><td>Farmview CSS</td><td>$farm_css<br><i><small>FV will restart if changed</small></i></td>";
-print "<td><select name=fcss>";
-my @fcsslist = glob("/var/www/IFMI/themes/*.css");
-    foreach my $file (@fcsslist) {
-       	$file =~ s/\/var\/www\/IFMI\/themes\///;
-       	if ("$file" eq "$farm_css") {
-          print "<option value=$file selected>$file</option>";
-        } else { 
-          print "<option value=$file>$file</option>";
-        }
-    }
-print "</select></td></tr>";
+
 my $gcolors = $mconf->{display}->{graphcolors};
 print "<tr><td>Graph Colors File</td><td>$gcolors</td>";
 print "<td><select name=gcf>";

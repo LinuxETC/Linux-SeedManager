@@ -515,7 +515,7 @@ if (@summary) {
   		$msput .= "<tr><td colspan=2>Host IP: $iptxt</td>";
 			$msput .= '<td class=big colspan=2><A href=ssh://user@' . $iptxt . '>SSH to Host</a></td></tr>';
 			$msput .= "<tr><td colspan=4><hr></td></tr>";
- 			$msput .= "<tr><td class=big><a href='config.pl'>SeedManager Configuration</a></td><td>";
+ 			$msput .= "<tr><td class=big><a href='sconfig.pl'>SeedManager Configuration</a></td><td>";
 
   	} else {		
 			if (defined $melapsed) { 

@@ -306,7 +306,7 @@ sub getCGMinerSummary {
 sub getConfig {
   my $conffile = '/opt/ifmi/seedmanager.conf';
   if (! -e $conffile) {
-    exec('/usr/lib/cgi-bin/config.pl');
+    exec('/usr/lib/cgi-bin/sconfig.pl');
   } 
   my $c;
   $c = LoadFile($conffile);
