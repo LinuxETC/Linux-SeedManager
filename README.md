@@ -1,16 +1,23 @@
+WOAH WOAH WOAH!!!
+
+THis is a brand new fork I am working on. NOTHING HERE WORKS YET. THIS IS JUST SOME TEST COMMITS. 
+
+DO NOT INSTALL THIS. 
+
+-----
+
+
 Web based pool and miner manager for Linux running CGminer and clones (sgminer, vertminer, keccak, etc). Written in perl (no php). 
-Originally extended from the BAMT miner web interface of gpumon/mgpumon.
 
 * Add or Remove pools, or Switch priority, from the web GUI without stopping your miner.
 * Stop/start the miner, with password protection and version/run time display.
 * Stats header with Total Accepted/Rejected/Ratio, Work Util, HW errors, Uptime, Load, Free Mem.
-* GPU and Pool details pages, including native graphing with persistence. 
+* ASC and Pool details pages, including native graphing with persistence. 
 * Miner details page with reboot control, SSH to Host link and Configuration Editor.
 * Install script enables SSL redirection (and optional default page password) for security.
-* Farm Overview, including miner versions, active pools, and last page refresh time.
 * Easy CSS theming, with several themes included. 
 * GUI Settings Page - no need to edit a settings file
-* Email alert notifications for GPUs and Pools, including hung or stopped miner. 
+* Email alert notifications for ASCs and Pools, including hung or stopped miner. 
 * Strategy handling, Pool Aliases, Miner Profiles
 * NEW! Password management from the GUI 
 
@@ -81,9 +88,6 @@ Q1: I cant get to my miner page anymore!
 
 A1: PoolManager changes your Apache configuration to use https, which is on port 443, not port 80. Please make sure you have port 443 open on any firewalls or routers between you and your miner. 
 
-Q2: FarmView doesnt work/shows no/bad or double status in BAMT
-
-A2: Make sure mgpumon and broadcast are stopped. Edit bamt.conf, set do_mgpumon to 0 and set do_bcast_status to 0. If you need to use mgpumon, put it on a different port. 
 
 Q3: How can I see my miner page/farmview remotely?
 
