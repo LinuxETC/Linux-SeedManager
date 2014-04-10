@@ -1,7 +1,7 @@
 #!/usr/bin/perl
-#    This file is part of IFMI PoolManager.
+#    This file is part of IFMI SeedManager.
 #
-#    PoolManager is distributed in the hope that it will be useful,
+#    SeedManager is distributed in the hope that it will be useful,
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #    GNU General Public License for more details.
@@ -10,13 +10,13 @@ use strict;
 use warnings;
 use CGI qw(:cgi-lib :standard); 
 use YAML qw( LoadFile );
-my $conffile = "/opt/ifmi/poolmanager.conf";
+my $conffile = "/opt/ifmi/seedmanager.conf";
 my $mconf = LoadFile( $conffile );
 my $hostname = `hostname`;
 my $theme = $mconf->{display}->{status_css};
 
 print header;
-print start_html( -title=>'PM - ' . $hostname . ' - Config',
+print start_html( -title=>'SM - ' . $hostname . ' - Config',
           -style=>{-src=>'/IFMI/themes/' . $theme } );
 
 my $currentm = $mconf->{settings}->{current_mconf};
@@ -51,7 +51,7 @@ print "<div id='content'><table class=configeditor><tr><td class=header>Miner Co
 print "<tr><td class=bigger>Hostname: $hostname </td></tr><tr><td>Config file: $savepath ";
 my $owner = getpwuid((stat($savepath))[4]);
 print " - Owned by: $owner";
-print "<br><small><i>Change this filepath in the <a href='config.pl'>settings</a></small></i></td></tr>";
+print "<br><small><i>Change this filepath in the <a href='sconfig.pl'>settings</a></small></i></td></tr>";
 print "<tr><td><form name='configedit' action='confedit.pl' method='POST'>";
 print "<textarea name='configtext' style='width:800px;height:600px'>$filedata</textarea>";
 print "</td></tr><tr><td>";
@@ -65,5 +65,5 @@ if ($status > 0) {
   print "</td></tr><tr><td>$savepath saved";
 }
 print "</form></td></tr>";
-print "<tr><td><a href='status.pl'>Back to node page</a></td></tr>";
+print "<tr><td><a href='seedstatus.pl'>Back to node page</a></td></tr>";
 print "</table></div></body></html>";

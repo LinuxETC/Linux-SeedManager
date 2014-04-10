@@ -46,15 +46,15 @@ if ($conf{farmview}{do_bcast_status} == 1) {
 
 # Email 
 if ($conf{monitoring}{do_email} == 1) { 
-  if (-f "/tmp/pmnotify.lastsent") {
-    if (time - (stat ('/tmp/pmnotify.lastsent'))[9] > ($conf{email}{smtp_min_wait} -10)) {
+  if (-f "/tmp/smnotify.lastsent") {
+    if (time - (stat ('/tmp/smnotify.lastsent'))[9] > ($conf{email}{smtp_min_wait} -10)) {
       &doEmail;
     }
   } else { &doEmail; }
 }
 
 # Graphs should be no older than 5 minutes
-my $graph = "/var/www/IFMI/graphs/msummary.png";
+my $graph = "/var/www/IFMI/graphs/smsummary.png";
 if (-f $graph) {
   if (time - (stat ($graph))[9] > 290) { 
     exec('/opt/ifmi/smgraph.pl'); 

@@ -19,6 +19,7 @@ if (! -f $conffile) {
   	monitoring => {
    		monitor_hash_lo => '200',
   		monitor_reject_hi => '3',
+      monitor_hardware_hi => '50',
       do_email => '0',
   	},
   	miners => {
@@ -75,6 +76,11 @@ if (-o $conffile) {
     if((defined $nrh) && ($nrh ne "")) {
       $nrh = "3" if (! ($nrh =~ m/^(\d+)?\.?\d+?$/));
       $mconf->{monitoring}->{monitor_reject_hi} = $nrh;
+    }
+    my $nhh = $in{'hwhi'};
+    if((defined $nhh) && ($nhh ne "")) {
+      $nhh = "50" if (! ($nhh =~ m/^\d+?$/));
+      $mconf->{monitoring}->{monitor_hardware_hi} = $nhh;
     }
     my $doe = $in{'emaildo'};
     $mconf->{monitoring}->{do_email} = $doe if((defined $doe) && ($doe ne ""));
@@ -405,6 +411,10 @@ print "<td><input type='text' size='3' placeholder='200' name='hashlo'></td></tr
 my $rejhi = $mconf->{monitoring}->{monitor_reject_hi};
 print "<tr><td>High Reject Rate</td><td>$rejhi%</td>";
 print "<td><input type='text' size='2' placeholder='3' name='rejhi'></td></tr>";
+
+my $hwhi = $mconf->{monitoring}->{monitor_hardware_hi};
+print "<tr><td>High Hardware Errors</td><td>$hwhi</td>";
+print "<td><input type='text' size='2' placeholder='50' name='hwhi'></td></tr>";
 
 my $emaildo = $mconf->{monitoring}->{do_email};
 print "<tr><td>Send Email</td>";

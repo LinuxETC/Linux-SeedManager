@@ -26,7 +26,6 @@ sub addPool {
 }
 
 sub blog {
-
   my ($msg) = @_;
   my @parts = split(/\//, $0);
   my $task = $parts[@parts-1];  

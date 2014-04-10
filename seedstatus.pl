@@ -66,7 +66,7 @@ if (defined $mstop) {
 
 my $mstart = $in{'mstart'};
 if (defined $mstart) { 
-  `sudo /opt/ifmi/mcontrol start`;
+  `sudo /opt/ifmi/smcontrol start`;
   $mstart = ""; 
 }
 my $restart = $in{'startnm'};
@@ -77,12 +77,12 @@ if (defined $restart) {
 	DumpFile($conffile, $conf); 
 	$snmc = "";
 	sleep 3;
-	`sudo /opt/ifmi/mcontrol start`;
+	`sudo /opt/ifmi/smcontrol start`;
 }
 
 my $reboot = $in{'reboot'};
 if (defined $reboot) { 
-  `sudo /opt/ifmi/mcontrol boot`;
+  `sudo /opt/ifmi/smcontrol boot`;
 }  
 
 my $qval = $in{'qval'};
@@ -347,7 +347,7 @@ if (@ascs) {
 		
 		my $aschwe;
 	  my $ghwe = $ascs[$i]{'hardware_errors'};	
-		if ($ghwe > 0) { 
+		if ($ghwe > ${$conf}{monitoring}{monitor_hardware_hi}) { 
 		  $problems++;
 		  push(@nodemsg, "ASC $i has hardware errors");
 		  if ($i == $showasc) {
@@ -365,7 +365,7 @@ if (@ascs) {
 
 		if ($i == $showasc)
 		{
-	    push(@ascmsg, "ASC $i has Hardware Errors") if ($ghwe > 0);		
+	    push(@ascmsg, "ASC $i has Hardware Errors") if ($ghwe > ${$conf}{monitoring}{monitor_hardware_hi});		
 			$asput .= "<td>HW Errors:</td>" . $aschwe . "</tr>"; 
 	    $asput .= "<tr><td>Intensity:</td><td>" . $ascs[$i]{'intensity'} . "</td>";
 			$agimg = "<br><img src='/IFMI/graphs/asc$i.png'>";
@@ -459,9 +459,9 @@ if (@summary) {
 			$mrunt = "Stopped" if (!defined $mrunt); 
 	    $msput .= "<tr><td>Run time:</td><td>" . $mrunt . "</td>";
 			if (defined $melapsed) {  	  
-			  $msput .= "<td  colspan=2><form name='mstop' action='status.pl' method='POST'><input type='hidden' name='mstop' value='stop'><input type='submit' value='Stop' onclick='this.disabled=true;this.form.submit();' > ";
+			  $msput .= "<td  colspan=2><form name='mstop' method='POST'><input type='hidden' name='mstop' value='stop'><input type='submit' value='Stop' onclick='this.disabled=true;this.form.submit();' > ";
 			} else { 
-			  $msput .= "<td  colspan=2><form name='mstart' action='status.pl' method='POST'><input type='hidden' name='mstart' value='start'><input type='submit' value='Start' onclick='this.disabled=true;this.form.submit();' > ";
+			  $msput .= "<td  colspan=2><form name='mstart' method='POST'><input type='hidden' name='mstart' value='start'><input type='submit' value='Start' onclick='this.disabled=true;this.form.submit();' > ";
 			}
 			$msput .= "</form></tr>";
 			$msput .= "</table><table>";
@@ -509,7 +509,7 @@ if (@summary) {
   		$getmlinv = `cat /proc/version`;
   		$mlinv = $1 if ($getmlinv =~ /version\s(.*?\s+\(.*?\))\s+\(/);
      	$msput .= "<tr><td colspan=2>Linux Version: " . $mlinv . "</td>";
-			$msput .= "<form name='reboot' action='status.pl' method='POST'><input type='hidden' name='reboot' value='reboot'>";
+			$msput .= "<form name='reboot' method='POST'><input type='hidden' name='reboot' value='reboot'>";
 			$msput .= "<td colspan=2><input type='submit' value='Reboot' onclick='this.disabled=true;this.form.submit();' > ";
 			$msput .= "</td></tr></form>";
   		$msput .= "<tr><td colspan=2>Host IP: $iptxt</td>";
@@ -523,9 +523,9 @@ if (@summary) {
 		  	$mcontrol .= "<br><small>$mstrategy Mode</small></td>";
 			  $mcontrol .= "<td>Profile: $runname<br>";
 		  	$mcontrol .= "<small>Run time: " . $mrunt . "</small></td>";
-			  $mcontrol .= "<td><form name='mstop' action='status.pl' method='POST'><input type='hidden' name='mstop' value='stop'><input type='submit' value='Stop' onclick='this.disabled=true;this.form.submit();' > </form>";
+			  $mcontrol .= "<td><form name='mstop' method='POST'><input type='hidden' name='mstop' value='stop'><input type='submit' value='Stop' onclick='this.disabled=true;this.form.submit();' > </form>";
 			  $mcontrol .= "<td><small>Switch Profile</small><br>";
-				$mcontrol .= "<form name='startnm' action='status.pl' method='post'><select name='startnm'>";
+				$mcontrol .= "<form name='startnm' method='post'><select name='startnm'>";
 				for (keys %{$conf{miners}}) {
 	  			my $mname = $conf{miners}{$_}{mconfig};
 	  				if ($currentm eq $_) {
@@ -549,7 +549,7 @@ if (@summary) {
 				}
 				$mcontrol .= "<input type='submit' value='Select'>";
 				$mcontrol .= "</select></form></td>";
-			  $mcontrol .= "<td><form name='mstart' action='status.pl' method='POST'><input type='hidden' name='mstart' value='start'><input type='submit' value='Start' onclick='this.disabled=true;this.form.submit();' > </form>";
+			  $mcontrol .= "<td><form name='mstart' method='POST'><input type='hidden' name='mstart' value='start'><input type='submit' value='Start' onclick='this.disabled=true;this.form.submit();' > </form>";
 			}
 			$mcontrol .= "</td>";		
 			my $fcheck = `ps -eo command | grep -Ec /opt/ifmi/farmview\$`;
@@ -577,7 +577,7 @@ if ($ispriv eq "S") {
 	if (@pools) {
 	  for (my $i=0;$i<@pools;$i++) {
 			my $pimg = "<img src='/IFMI/timeout24.png'>";
-	    $pimg = "<form name='pselect' action='status.pl' method='POST'><input type='hidden' name='swpool' value='$i'><button type='submit'>Switch</button></form>" 
+	    $pimg = "<form name='pselect' method='POST'><input type='hidden' name='swpool' value='$i'><button type='submit'>Switch</button></form>" 
 	    				if ($mstrategy eq "Failover");
     	my $pname = ${$pools[$i]}{'url'};
 			my $pactive = 0; 
@@ -644,14 +644,14 @@ if ($ispriv eq "S") {
 	      } else { 
 					$current = "Not Active  ";
 	      }
-	      $psput .= "<tr><form name='pdelete' action='status.pl' method='POST'><td class='big' colspan=4>$current";
+	      $psput .= "<tr><form name='pdelete' method='POST'><td class='big' colspan=4>$current";
 		  	if ($pactive == 0) {
 	      	$psput .= "<input type='hidden' name='delpool' value='$i'><input type='submit' value='Remove this pool'>";
 	      }
 	      $psput .= "</form></td></tr>";
 	      $psput .= "<tr><td>Mining URL:</td><td colspan=3>" . $pname . "</td></tr>";
 				$psput .= "<tr><td>Alias:</td><td>$poola</td><td colspan=2>";
-	      $psput .= "<form name='palias' action='status.pl' method='POST'>";
+	      $psput .= "<form name='palias' method='POST'>";
 				$psput .= "<input type='text' size='10' placeholder='pool alias' name='npalias'>";
 				$psput .= "<input type='hidden' name='paurl' value='$pname'>";
 				$psput .= "<input type='submit' value='Change'></form></td></tr>";
@@ -703,7 +703,7 @@ if ($ispriv eq "S") {
 	      $psum .= "<td>" . $pimg . "</td>";
 			  if ($mstrategy eq "Load Balance") {
 	      	$psum .= "<td> " . $pquo . " </td>";
-	      	$psum .= "<td><form name='pquota' action='status.pl' method='POST'>";
+	      	$psum .= "<td><form name='pquota' method='POST'>";
 	      	$psum .= "<input type='text' size='3' name='qval' required>";
 	      	$psum .= "<input type='hidden' name='qpool' value='$i'>";
 	      	$psum .= "<input type='submit' value='Set'></form></td>";
@@ -712,7 +712,7 @@ if ($ispriv eq "S") {
       	$psum .= "</tr>";
       }
 	  }
-	  $psum .= "<tr><form name='padd' action='status.pl' method='POST'>";
+	  $psum .= "<tr><form name='padd' method='POST'>";
 	  $psum .= "<td colspan='2'><input type='text' size='45' placeholder='MiningURL:portnumber' name='npoolurl' required>";
 	  $psum .= "</td><td colspan='2'><input type='text' placeholder='username.worker' name='npooluser' required>";
 	  $psum .= "</td><td colspan='3'><input type='text' size='15' placeholder='worker password' name='npoolpw'>";
@@ -749,7 +749,7 @@ print "<table><TR><TD>";
 print "<table><TR><TD rowspan=2><div class='logo'><a href='https://github.com/starlilyth/Pi-SeedManager' target=_blank>";
 print "</a></div></TD>";
 print "<TD class='overviewid'>$miner_name<br><small>@ $iptxt</small></td>";
-print "<td align='right'><form method='post' action='status.pl' name='zero'>";
+print "<td align='right'><form method='post' name='zero'>";
 print "<input type='hidden' value='zero' name='zero' /><button type='submit' title='reset stats' class='reset-btn'/></form></td>";
 print "<tr><TD class='overviewhash' colspan=2>";
 $minerate = "0" if (!defined $minerate); 

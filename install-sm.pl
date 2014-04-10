@@ -1,8 +1,8 @@
 #!/usr/bin/perl
-# IFMI PoolManager installer. 
-#    This file is part of IFMI PoolManager.
+# IFMI SeedManager installer. 
+#    This file is part of IFMI SeedManager.
 #
-#    PoolManager is distributed in the hope that it will be useful,
+#    SeedManager is distributed in the hope that it will be useful,
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #    GNU General Public License for more details.   
@@ -13,13 +13,13 @@ use File::Copy;
 
 my $login = (getpwuid $>);
 die "Please run as root (do not use sudo)" if ($login ne 'root');
-die "please execute from the install directory.\n" if (!-f "./install-pm.pl") ;
+die "please execute from the install directory.\n" if (!-f "./install-sm.pl") ;
 
 if ((defined $ARGV[0]) && ($ARGV[0] eq "-q")) {
 	my $flag = $ARGV[0];
 	&doInstall($flag); 
 } else { 
-	print "This will install the IFMI PoolManager for cgminer and clones on Linux.\n";
+	print "This will install the IFMI SeedManager for cgminer and clones on Linux.\n";
 	print "Are you sure? (y/n) ";
 	my $ireply = <>; chomp $ireply;
 	if ($ireply =~ m/y(es)?/i) {
@@ -43,7 +43,7 @@ sub doInstall {
 	$flag = $_[0] if (defined $_[0]);
 	use POSIX qw(strftime);
 	my $now = POSIX::strftime("%Y-%m-%d.%H.%M", localtime());	
-	my $instlog = "PoolManager Install Log.\n$now\n";
+	my $instlog = "SeedManager Install Log.\n$now\n";
 	print "Perl module check \n" if ($flag ne "-q");
 	require RRDs;
 	require YAML;
@@ -74,50 +74,56 @@ sub doInstall {
       	copy $webdir . "/index.html", $webdir . "/index.html.pre-ifmi" if (-f $webdir . "/index.html");
     	}
     	copy "index.html", $webdir;
-    	if (!-f $cgidir . "/status.pl.pre-ifmi") {
-    		copy $cgidir . "/status.pl", $cgidir . "/status.pl.pre-ifmi" if (-f $cgidir . "/status.pl"); 			
-    	}
-    	copy "status.pl", $cgidir;
-			copy "config.pl", $cgidir;
+    	copy "seedstatus.pl", $cgidir;
+			copy "sconfig.pl", $cgidir;
     	copy "confedit.pl", $cgidir;
-      copy "farmview", $appdir;
     	copy "favicon.ico", $webdir;
-    	copy "mcontrol", $appdir;
-    	copy "pm-common.pl", $appdir;
-  		copy "pmgraph.pl", $appdir; 
-  		copy "pmnotify.pl", $appdir;
-      copy "run-poolmanager.pl", $appdir;
-    	copy "sendstatus.pl", $appdir;
+    	copy "smcontrol", $appdir;
+    	copy "sm-common.pl", $appdir;
+  		copy "smgraph.pl", $appdir; 
+  		copy "smnotify.pl", $appdir;
+      copy "run-seedmanager.pl", $appdir;
     	`cp themes/* $webdir/IFMI/themes`;
     	`cp images/*.png $webdir/IFMI`;
     	`chmod 0755 $appdir/*.pl`; #because windows f's up the permissions. wtf. 
     	`chmod 0755 $appdir/mcontrol`; #because windows
-    	`chmod 0755 $appdir/farmview`; #because windows
     	`chmod 0755 $cgidir/*.pl`; #because windows
-			`chown $apacheuser $appdir/poolmanager.conf` if (-f "$appdir/poolmanager.conf");
+			`chown $apacheuser $appdir/seedmanager.conf` if (-f "$appdir/seedmanager.conf");
     	$instlog .= "files copied.\n";
 		} else { 
 			die "Your web directories are in unexpected places. Quitting.\n";
 		}
 		copy "/etc/crontab", "/etc/crontab.pre-ifmi" if (!-f "/etc/crontab.pre-ifmi");
-    if (! `grep -E  ^"\* \* \* \* \* root /opt/ifmi/run-poolmanager.pl" /etc/crontab`) {
+    if (! `grep -E  ^"\* \* \* \* \* root /opt/ifmi/run-seedmanager.pl" /etc/crontab`) {
 			print "Setting up crontab...\n" if ($flag ne "-q");
     	open my $cin, '>>', "/etc/crontab";
-     	print $cin "* * * * * root /opt/ifmi/run-poolmanager.pl\n\n";
+     	print $cin "* * * * * root /opt/ifmi/run-seedmanager.pl\n\n";
     	close $cin;
 	    $instlog .= "crontab modified.\n";
     }
-    copy "/etc/sudoers.pre-ifmi", "/etc/sudoers" if (-f "/etc/sudoers.pre-ifmi");
+    #copy "/etc/sudoers.pre-ifmi", "/etc/sudoers" if (-f "/etc/sudoers.pre-ifmi");
 		copy "/etc/sudoers", "/etc/sudoers.pre-ifmi" if (!-f "/etc/sudoers.pre-ifmi");
-		if (! `grep -E /opt/ifmi/mcontrol /etc/sudoers`) {
-		    print "Modifying sudoers....\n" if ($flag ne "-q");
-	      	open my $sin, '>>', "/etc/sudoers";
-	 		print $sin "$apacheuser ALL=(root)NOPASSWD: /opt/ifmi/mcontrol,/usr/bin/htpasswd\nDefaults:$apacheuser rootpw\n$apacheuser ALL=(root) /bin/cp\n";
-			close $sin;
+		if (! `grep -E /opt/ifmi/smcontrol /etc/sudoers`) {
+		  print "Modifying sudoers....\n" if ($flag ne "-q");
+			my $fin = "/etc/sudoers";
+			if (! `grep -E /opt/ifmi/mcontrol /etc/sudoers`) {
+      	open my $sin, '>>', $fin;
+ 				print $sin "$apacheuser ALL=(root)NOPASSWD: /opt/ifmi/smcontrol,/usr/bin/htpasswd\nDefaults:$apacheuser rootpw\n$apacheuser ALL=(root) /bin/cp\n";
+				close $sin;
+			} else {
+		    open my $sin, '<', $fin;
+		    open my $sout, '>', "$fin.out"; 
+		    while (<$sin>) {
+    			s/\/opt\/ifmi\/mcontrol/\/opt\/ifmi\/mcontrol,\/opt\/ifmi\/smcontrol/;
+    			print $sout $_;
+				}    
+			  close $sin; close $sout;
+    		rename "$fin.out", $fin; 
+			}
 			`chmod 0440 /etc/sudoers`;
 			$instlog .= "sudoers modified.\n";
 		}
-		print "PoolManager attempts to set up some basic security for your web service.\n" if ($flag ne "-q");
+		print "SeedManager attempts to set up some basic security for your web service.\n" if ($flag ne "-q");
 		print "It will enable SSL and redirect all web traffic over https.\n" if ($flag ne "-q");
 		if (!-f "/etc/ssl/certs/apache.crt") {
 			print "First, we need to create a self-signed cert to enable SSL.\n" if ($flag ne "-q");
@@ -184,7 +190,7 @@ sub doInstall {
 		print "Cant determine apache user, Bailing out!\n";
 		$instlog .= "unknown apache user, bailed out.\n";
 	}
-	open my $lin, '>', "PM-install-log.$now";
+	open my $lin, '>', "SM-install-log.$now";
 	print $lin $instlog;
 	close $lin; 
 }

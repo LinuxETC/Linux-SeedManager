@@ -14,7 +14,7 @@ my $login = (getpwuid $>);
 die "must run as root" if ($login ne 'root');
 die "no arguments" if ($ARGV[0] eq "");
 
- require '/opt/ifmi/pm-common.pl';
+ require '/opt/ifmi/sm-common.pl';
 
  my $conf = &getConfig;
  my %conf = %{$conf};
