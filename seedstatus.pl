@@ -686,7 +686,7 @@ if ($ispriv eq "S") {
 	      $psput .= "<td>Stale:</td><td>" . $pss . "</td></tr>";
 	      $psput .= "<tr><td>Get Failures:</td><td>" . $psgf . "</td>";
 	      $psput .= "<td>Rem Fails:</td><td>" . $psrf . "</td></tr>";
-	      $pgimg = "<br><img src='/IFMI/graphs/pool$i.png'>";
+	      $pgimg = "<br><img src='/IFMI/graphs/spool$i.png'>";
 	    } else {
 	      my $purl = "?";
 	      $purl .= "pool=$i";
@@ -910,10 +910,9 @@ given(my $x) {
 		print "<div class=graphs>";	
 		print "<table>";
 		print "<tr><td align=left>";	
-		my $img = "/var/www/IFMI/graphs/msummary.png";
+		my $img = "/var/www/IFMI/graphs/smsummary.png";
 		if (-e $img) {
-			print '<img src="/IFMI/graphs/msummary.png"><br>';
-			print '<img src="/IFMI/graphs/gsummary.png">';
+			print '<img src="/IFMI/graphs/smsummary.png">';
 		} else {
 			print "<font style='color: #999999; font-size: 10px;'>Summary graph not available yet.";
 		}

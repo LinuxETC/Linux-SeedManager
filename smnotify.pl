@@ -16,7 +16,7 @@ use Email::Sender::Transport::SMTP;
 use Email::Sender::Transport::SMTP::TLS;
 use Try::Tiny;
 
-require '/opt/ifmi/pm-common.pl';
+require '/opt/ifmi/sm-common.pl';
 my $conf = &getConfig;
 my %conf = %{$conf};
 my $conffile = "/opt/ifmi/seedmanager.conf";
