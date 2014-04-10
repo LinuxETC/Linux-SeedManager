@@ -193,9 +193,6 @@ sub getCGMinerStats {
   if ($res =~ m/Total\sMH=(\d+)\.\d+,/) {
    $data->{'total_mh'} = $1;
   }
-  if ($res =~ m/Temperature=(\d+\.\d+),/) {
-   $data->{'current_temp_0_c'} = $1;
-  }
 }
 
 sub getCGMinerSummary {    

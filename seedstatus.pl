@@ -341,9 +341,6 @@ if (@ascs) {
 			$aput .= '<td>N/A';
 		}	
 		$aput .= "</TD>";
-
-		my $gint = $ascs[$i]{'intensity'}; $gint = "0" if ($gint eq "");	
-		$aput .= '<TD>' . $gint . '</td>';
 		
 		my $aschwe;
 	  my $ghwe = $ascs[$i]{'hardware_errors'};	
@@ -367,7 +364,6 @@ if (@ascs) {
 		{
 	    push(@ascmsg, "ASC $i has Hardware Errors") if ($ghwe > ${$conf}{monitoring}{monitor_hardware_hi});		
 			$asput .= "<td>HW Errors:</td>" . $aschwe . "</tr>"; 
-	    $asput .= "<tr><td>Intensity:</td><td>" . $ascs[$i]{'intensity'} . "</td>";
 			$agimg = "<br><img src='/IFMI/graphs/asc$i.png'>";
 		}
 			
