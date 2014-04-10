@@ -442,11 +442,11 @@ sub startCGMiner {
   if (not defined $pid) {
     die "out of resources? forking failed for cgminer process";
   } elsif ($pid == 0) {
-    $ENV{DISPLAY} = ":0";
-    $ENV{LD_LIBRARY_PATH} = "/opt/AMD-APP-SDK-v2.4-lnx32/lib/x86/:/opt/AMDAPP/lib/x86_64:";
-    $ENV{ASC_USE_SYNC_OBJECTS} = "1";
-    $ENV{ASC_MAX_ALLOC_PERCENT} = "100";
-    my $cmd = "/usr/bin/screen -d -m -S PM-miner $minerbin $mineropts"; 
+ #   $ENV{DISPLAY} = ":0";
+ #   $ENV{LD_LIBRARY_PATH} = "/opt/AMD-APP-SDK-v2.4-lnx32/lib/x86/:/opt/AMDAPP/lib/x86_64:";
+ #   $ENV{ASC_USE_SYNC_OBJECTS} = "1";
+ #   $ENV{ASC_MAX_ALLOC_PERCENT} = "100";
+    my $cmd = "/usr/bin/screen -d -m -S SM-miner $minerbin $mineropts"; 
     &blog("starting miner with cmd: $cmd") if (defined(${$conf}{settings}{verbose}));
     ${$conf}{settings}{running_mconf} = $currmconf;
     my $conffile = "/opt/ifmi/seedmanager.conf";

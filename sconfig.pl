@@ -38,10 +38,9 @@ if (! -f $conffile) {
   	display => {
   		miner_loc => 'Undisclosed Location',
   		status_css => 'default.css',
-  		farmview_css => 'default.css',
-  		graphcolors => 'pmgraph.colors',
+  		graphcolors => 'smgraph.colors',
   		usehashavg => '0',
-      pmversion => "$version",
+      smversion => "$version",
   	},
     email => {
       smtp_to => 'root@localhost', 
@@ -63,8 +62,8 @@ if (! -f $conffile) {
 my $conferror = 0; my $mailerror = "";
 my $mconf = LoadFile( $conffile );
 if (-o $conffile) {
-  my $curver = $mconf->{display}->{pmversion};
-  $mconf->{display}->{pmversion} = $version if ($version ne $curver);
+  my $curver = $mconf->{display}->{smversion};
+  $mconf->{display}->{smversion} = $version if ($version ne $curver);
   our %in;
   if (&ReadParse(%in)) {
     my $nhl = $in{'hashlo'};
@@ -191,7 +190,7 @@ if (-o $conffile) {
     my $nha = $in{'hashavg'};
     $mconf->{display}->{usehashavg} = $nha if(defined $nha);
 
-    $mconf->{display}->{pmversion} = $version if ($mconf->{display}->{pmversion} eq "");
+    $mconf->{display}->{smversion} = $version if ($mconf->{display}->{smversion} eq "");
 
     my $nbcast = $in{'bcast'};
     $mconf->{farmview}->{do_bcast_status} = $nbcast if((defined $nbcast) && ($nbcast ne ""));
@@ -228,7 +227,7 @@ if (-o $conffile) {
     }
     my $se = $in{'sendemail'};
     if (defined $se) {
-      require '/opt/ifmi/pmnotify.pl';
+      require '/opt/ifmi/smnotify.pl';
       my $currsettings = "Email Settings:\n";
       $currsettings .= "- Email To: " . $mconf->{email}->{smtp_to} . "\n";
       $currsettings .= "- Email From: " . $mconf->{email}->{smtp_from} . "\n";
@@ -237,11 +236,6 @@ if (-o $conffile) {
       $currsettings .= "- Email Frequency: " . $mconf->{email}->{smtp_min_wait} / 60 . "minutes\n";
       $currsettings .= "- Auth User: " . $mconf->{email}->{smtp_auth_user} . "\n";
       $currsettings .= "\nMonitoring Settings: \n";
-      $currsettings .= "- High Temp: " . $mconf->{monitoring}->{monitor_temp_hi} . "C\n"; 
-      $currsettings .= "- Low Temp: " . $mconf->{monitoring}->{monitor_temp_lo} . "C\n"; 
-      $currsettings .= "- High Fanspeed: " . $mconf->{monitoring}->{monitor_fan_hi} . "RPM\n"; 
-      $currsettings .= "- Low Fanspeed: " . $mconf->{monitoring}->{monitor_fan_lo} . "RPM\n"; 
-      $currsettings .= "- Low Load: " . $mconf->{monitoring}->{monitor_load_lo} . "\n"; 
       $currsettings .= "- Low Hashrate: " . $mconf->{monitoring}->{monitor_hash_lo} . "Kh/s\n"; 
       $currsettings .= "- High Reject Rate: " . $mconf->{monitoring}->{monitor_reject_hi} . "%\n"; 
       
@@ -264,13 +258,13 @@ if (-o $conffile) {
 print header();
 my $miner_name = `hostname`;
 chomp $miner_name;
-print start_html( -title=>'PM - ' . $miner_name . ' - Settings',
+print start_html( -title=>'SM - ' . $miner_name . ' - Settings',
 				  -style=>{-src=>'/IFMI/themes/' . $mconf->{display}->{status_css}} );
 
 
 print "<div id='showdata'><br>";
-print "<a href='status.pl'> << Back to Overview</a><br>";
-print "<a href='status.pl?miner='> << Back to Miner details page</a>";
+print "<a href='seedstatus.pl'> << Back to Overview</a><br>";
+print "<a href='seedstatus.pl?miner='> << Back to Miner details page</a>";
 print "<br></div>";
 
 print "<div id='content'><table class=settingspage>";

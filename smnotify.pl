@@ -229,7 +229,7 @@ sub sendAnEmail {
 		try { 
 			sendmail($email, { transport => $transport });
 		} finally {
-			`/usr/bin/touch /tmp/pmnotify.lastsent`;
+			`/usr/bin/touch /tmp/smnotify.lastsent`;
 		} catch {
 			return "Email Error: $_";
 		};

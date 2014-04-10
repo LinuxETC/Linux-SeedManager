@@ -196,7 +196,7 @@ if ($showminer > -1)
 print header;
 if ($url eq "?")
 {
-	print start_html( -title=>'PM - ' . $miner_name . ' - Status', 
+	print start_html( -title=>'SM - ' . $miner_name . ' - Status', 
 		-style=>{-src=>'/IFMI/themes/' . $conf{display}{status_css}},  
 		-head=>$q->meta({-http_equiv=>'REFRESH',-content=>'30'})  
 		);
@@ -204,7 +204,7 @@ if ($url eq "?")
 else
 {
 	$url .= "tok=1";
-	print start_html( -title=>'PM - ' . $miner_name . ' - Status', 
+	print start_html( -title=>'SM - ' . $miner_name . ' - Status', 
 		-style=>{-src=>'/IFMI/themes/' . $conf{display}{status_css}},  
 		-head=>$q->meta({-http_equiv=>'REFRESH',-content=>'30; url=' . $url })  
 	  );
@@ -885,7 +885,7 @@ given(my $x) {
                 print "<p><img src='/IFMI/ok.png'><p>";
                 print "All OK";
         }
-        my $release = $conf{display}{pmversion};
+        my $release = $conf{display}{smversion};
    		print "</td></tr></table>";        
         print "</td><td><table>$msput</td></tr>";
         print "<tr><td colspan=4><hr></td></tr>";
