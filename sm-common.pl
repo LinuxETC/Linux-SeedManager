@@ -176,9 +176,6 @@ sub getCGMinerStats {
   if ($res =~ m/Hardware\sErrors=(\d+),/) {
     $data->{'hardware_errors'} =$1;
   }
-  if ($res =~ m/Intensity=(\d+),/) {
-    $data->{'intensity'} =$1;
-  }   
   if ($res =~ m/Last\sShare\sPool=(\d+),/) {
     foreach my $p (@pools) {
       if (${$p}{poolid} == $1) {
