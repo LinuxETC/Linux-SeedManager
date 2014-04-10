@@ -43,6 +43,10 @@ if (! -f $conffile) {
   		usehashavg => '0',
       smversion => "$version",
   	},
+      farmview => {
+      do_bcast_status => '1',
+      status_port => '54545',
+    },
     email => {
       smtp_to => 'root@localhost', 
       smtp_host => 'localhost',
