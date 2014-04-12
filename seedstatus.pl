@@ -233,8 +233,10 @@ if (@ascs) {
 	$a1put .= "<TD class='header'>Rate</TD>";
 	$a1put .= "<TD class='header'>Pool</TD>";
 	$a1put .= "<TD class='header' colspan=2>Accept/Reject</TD>";
-	$a1put .= "<TD class='header'>I</TD>";
 	$a1put .= "<TD class='header'>HW</TD></tr>";
+#	$a1put .= "<TD class='header'>Frequency</TD>";
+#	$a1put .= "<TD class='header'>Serial ID</TD>";
+
 
 	for (my $i=0;$i<@ascs;$i++) {
 	  my $aput;
