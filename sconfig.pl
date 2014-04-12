@@ -256,7 +256,7 @@ if (-o $conffile) {
       $currsettings .= "- High Reject Rate: " . $mconf->{monitoring}->{monitor_reject_hi} . "%\n"; 
       
       $mailerror = &sendAnEmail("TEST",$currsettings);
-  }
+    }
       
     DumpFile($conffile, $mconf); 
   }

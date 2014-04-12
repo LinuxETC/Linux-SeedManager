@@ -13,6 +13,8 @@ use strict;
 
 require '/opt/ifmi/sm-common.pl';
 require '/opt/ifmi/smnotify.pl';
+require '/opt/ifmi/ssendstatus.pl';
+
 
 my $conf = &getConfig;
 my %conf = %{$conf};

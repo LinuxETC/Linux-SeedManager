@@ -46,18 +46,17 @@ $fontfam = $gconf->{fontfam} if (defined ($gconf->{fontfam}));
 #ASCs 
 my $ispriv = &CGMinerIsPriv; 
 if ($ispriv eq "S") {
-
-  my $asccount = &getCGMinerASCCount;
-  for (my $i=0;$i<$asccount;$i++)
-  {
+  my $asccount = 0; 
+  $asccount = &getCGMinerASCCount;
+  for (my $i=0;$i<$asccount;$i++) {
     my $gnum = $i; 
     my $GDB = $DBPATH . "asc" . $gnum . ".rrd";
     if (! -f $GDB) { 
       RRDs::create($GDB, "--step=300", 
-      "DS:hash:GAUGE:600:U:U",
-      "DS:shacc:DERIVE:600:0:U",
-      "DS:hwe:COUNTER:600:U:U",
-      "RRA:LAST:0.5:1:288", 
+       "DS:hash:GAUGE:600:U:U",
+       "DS:shacc:DERIVE:600:0:U",
+       "DS:hwe:COUNTER:600:U:U",
+       "RRA:LAST:0.5:1:288", 
       );
       die "graph failed: $ERR\n" if $ERR;
     }
@@ -73,40 +72,39 @@ if ($ispriv eq "S") {
     if ($res =~ m/Hardware\sErrors=(\d+),/) {
     	$ghwe = $1;
     }
+    RRDs::update($GDB, "--template=hash:shacc:hwe", "N:$ghash:$gshacc:$ghwe");
+    die "graph failed: $ERR\n" if $ERR;
 
-  RRDs::update($GDB, "--template=hash:shacc:hwe", "N:$ghash:$gshacc:$ghwe");
-  die "graph failed: $ERR\n" if $ERR;
-
-  RRDs::graph("-P", $PICPATH . "asc$gnum.png",
-   "--title","24 Hour Summary",
-   "--vertical-label","Hashrate K/hs",
-   "--right-axis-label","Shares Acc. x10",
-   "--right-axis",".1:0",
-   "--start","now-1d",
-   "--end", "now",
-   "--width","700","--height","200",
-   "--color","BACK#00000000",
-   "--color","CANVAS#00000000",
-   "--color","FONT$fontcolor",
-   "--border","1", 
-   "--font","DEFAULT:0:$fontfam",
-   "--font","WATERMARK:4:$fontfam",
-   "--slope-mode", "--interlaced",
-   "DEF:gdhash=$GDB:hash:LAST",
-   "DEF:gdshacc=$GDB:shacc:LAST",
-   "DEF:gdhwe=$GDB:hwe:LAST",
-   "CDEF:gcshacc=gdshacc,60,*",
-   "VDEF:gvshacc=gcshacc,AVERAGE",
-   "CDEF:gccshacc=gdshacc,6000,*",
-   "COMMENT:<span font_desc='10'>ASC $gnum</span>",
-   "TEXTALIGN:left",
-   "AREA:gdhash$hashcolor: Hashrate",
-   "AREA:gccshacc$acccolor: Shares Accepted / Min",
-   "GPRINT:gvshacc:%2.2lf",
-   "COMMENT:                 ",
-   "TICK:gdhwe$errorcolor:-0.1: HW error",
-   );
-  die "graph failed: $ERR\n" if $ERR;
+    RRDs::graph("-P", $PICPATH . "asc$gnum.png",
+     "--title","24 Hour Summary",
+     "--vertical-label","Hashrate K/hs",
+     "--right-axis-label","Shares Acc. x10",
+     "--right-axis",".1:0",
+     "--start","now-1d",
+     "--end", "now",
+     "--width","700","--height","200",
+     "--color","BACK#00000000",
+     "--color","CANVAS#00000000",
+     "--color","FONT$fontcolor",
+     "--border","1", 
+     "--font","DEFAULT:0:$fontfam",
+     "--font","WATERMARK:4:$fontfam",
+     "--slope-mode", "--interlaced",
+     "DEF:gdhash=$GDB:hash:LAST",
+     "DEF:gdshacc=$GDB:shacc:LAST",
+     "DEF:gdhwe=$GDB:hwe:LAST",
+     "CDEF:gcshacc=gdshacc,60,*",
+     "VDEF:gvshacc=gcshacc,AVERAGE",
+     "CDEF:gccshacc=gdshacc,6000,*",
+     "COMMENT:<span font_desc='10'>ASC $gnum</span>",
+     "TEXTALIGN:left",
+     "AREA:gdhash$hashcolor: Hashrate",
+     "AREA:gccshacc$acccolor: Shares Accepted / Min",
+     "GPRINT:gvshacc:%2.2lf",
+     "COMMENT:                 ",
+     "TICK:gdhwe$errorcolor:-0.1: HW error",
+    );
+    die "graph failed: $ERR\n" if $ERR;
   }
 }
 
@@ -126,7 +124,7 @@ if (! -f $SDB){
   die "graph failed: $ERR\n" if $ERR;
 } 
 
-my $sumres = &sendAPIcommand("summary","");
+my $sumres = &sendAPIcommand("summary",);
 
 my $mhashav = "0";my $mfoundbl = "0";my $maccept = "0";my $mreject = "0";my $mhwerrors = "0";my $mworkutil = "0";
 if ($sumres =~ m/MHS\sav=(\d+\.\d+),/g) {
@@ -198,7 +196,7 @@ die "graph failed: $ERR\n" if $ERR;
 
 # Pools
 
-my $pres = &sendAPIcommand("pools","");
+my $pres = &sendAPIcommand("pools",);
 my $poid; my $pdata; 
 while ($pres =~ m/POOL=(\d+),(.+?)\|/g) {
   $poid = $1; $pdata = $2; 
