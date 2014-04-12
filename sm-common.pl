@@ -430,12 +430,13 @@ sub startCGMiner {
   if ($minerbin eq "") {
     die "No miner path defined! Exiting."; 
   }
-  my $mineropts =  ${$conf}{miners}{$currmconf}{mopts};   
+  my $mineropts =  ${$conf}{miners}{$currmconf}{mopts}; 
+  my $savepath = ${$conf}{miners}{$currmconf}{savepath};  
   my $pid = fork();   
   if (not defined $pid) {
     die "out of resources? forking failed for cgminer process";
   } elsif ($pid == 0) {
-    my $cmd = "/usr/bin/screen -d -m -S SM-miner $minerbin $mineropts"; 
+    my $cmd = "/usr/bin/screen -d -m -S SM-miner $minerbin --config $savepath $mineropts"; 
     &blog("starting miner with cmd: $cmd") if (defined(${$conf}{settings}{verbose}));
     ${$conf}{settings}{running_mconf} = $currmconf;
     my $conffile = "/opt/ifmi/seedmanager.conf";

@@ -43,12 +43,6 @@ $errorcolor = $gconf->{errorcolor} if (defined ($gconf->{errorcolor}));
 my $fontfam = "Helvetica";
 $fontfam = $gconf->{fontfam} if (defined ($gconf->{fontfam}));
 
-if (-f '/tmp/cleargraphs.flag') {
-  system('/bin/rm /tmp/cleargraphs.flag');
-  system('/bin/rm ' . $DBPATH . '*.rrd');
-  system('/bin/rm ' . $PICPATH . '*.png');
-}
-
 #ASCs 
 my $ispriv = &CGMinerIsPriv; 
 if ($ispriv eq "S") {

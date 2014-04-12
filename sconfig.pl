@@ -26,7 +26,7 @@ if (! -f $conffile) {
       0 => {
     		mconfig => 'Default',
         mpath => '/opt/miners/cgminer/cgminer',
-    		mopts => '--api-listen --config /opt/ifmi/cgminer.conf',
+    		mopts => '--api-listen',
   	   	savepath => '/opt/ifmi/cgminer.conf',
       },
   	},
@@ -114,7 +114,7 @@ if (-o $conffile) {
             my $newm = (keys %{$mconf->{miners}}); $newm++; 
             $mconf->{miners}->{$newm}->{mconfig} = $nmname;
             $mconf->{miners}->{$newm}->{mpath} = $nmp;
-            $nmo = "--api-listen --config /opt/ifmi/$nmname.conf" if ($nmo eq "");
+            $nmo = "--api-listen" if ($nmo eq "");
             $mconf->{miners}->{$newm}->{mopts} = $nmo;
             $nsp = "/opt/ifmi/$nmname.conf" if ($nsp eq "");
             $mconf->{miners}->{$newm}->{savepath} = $nsp;        
@@ -200,6 +200,12 @@ if (-o $conffile) {
     my $nha = $in{'hashavg'};
     $mconf->{display}->{usehashavg} = $nha if(defined $nha);
 
+    my $cgraphs = $in{'cgraphs'};
+    if ((defined $cgraphs) &&($cgraphs ne "")) {
+      `sudo /opt/ifmi/smcontrol cleargraphs`;
+      $cgraphs = "";
+    }
+
     $mconf->{display}->{smversion} = $version if ($mconf->{display}->{smversion} eq "");
 
     my $nbcast = $in{'bcast'};
@@ -253,12 +259,6 @@ if (-o $conffile) {
   }
       
     DumpFile($conffile, $mconf); 
-
-    my $cgraphs = $in{'cgraphs'};
-    if (defined $cgraphs) {
-      `/usr/bin/touch /tmp/cleargraphs.flag`;
-      $cgraphs = "";
-    }
   }
 } else { 
   $conferror = 1; 
@@ -325,13 +325,14 @@ print " <input type='text' placeholder='enter name for new profile' name='nmname
 my $miner_path = $mconf->{miners}->{$currentm}->{mpath};
 print "<tr><td>Miner Path</td><td colspan=2>$miner_path</td>";
 print "<td><input type='text' size='45' placeholder='/path/to/miner' name='nmp'></td></tr>";
+my $savepath = $mconf->{miners}->{$currentm}->{savepath}; 
+print "<tr><td>Miner Config<br><i><small>Click to edit</small></i></td>";
+print "<td colspan=2><small>--config</small> ";
+print "<a href='/cgi-bin/confedit.pl' target='_blank'>$savepath</a></td>";
+print "<td><input type='text' size='45' placeholder='/opt/ifmi/cgminer.conf' name='nsp'>";
 my $miner_opts = $mconf->{miners}->{$currentm}->{mopts};
 print "<tr><td>Miner Options</td><td colspan=2>$miner_opts</td>";
-print "<td><input type='text' size='45' placeholder='--api-listen --config /opt/ifmi/cgminer.conf' name='nmo'></td></tr>";
-my $savepath = $mconf->{miners}->{$currentm}->{savepath}; 
-print "<tr><td>Miner Config<br>Save Path</td>";
-print "<td colspan=2><a href='/cgi-bin/confedit.pl' target='_blank'>$savepath</a><br><i><small>Changes to the miner config are saved here</small></i></td>";
-print "<td><input type='text' size='45' placeholder='/opt/ifmi/cgminer.conf' name='nsp'>";
+print "<td><input type='text' size='45' placeholder='--api-listen' name='nmo'></td></tr>";
 print "</form></td></tr>";
 print "</table><br>";
 
@@ -544,8 +545,8 @@ if ($hashavg==1) {
   print "<td><input type='radio' name='hashavg' value=0 checked>5 sec";
   print "<input type='radio' name='hashavg' value=1>Overall</td></tr></form>";
 }
-  print "<form><tr><td>Clear All Graphs</td>";
-  print "<td><i>wait for it..</i></td>";
+  print "<form method=post><tr><td>Clear All Graphs</td>";
+  print "<td><i></i></td>";
   print "<td><input type='hidden' name='cgraphs' value='cgraphs'><button type='submit'>Clear</button></td></tr>";
   print "</table></form>";
 
