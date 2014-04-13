@@ -1,5 +1,5 @@
 
-THIS IS THE GRIDSEED VERSION. It should work with any ASICs. It is adapted from PoolManager, which was made for GPUs. 
+THIS IS THE GRIDSEED VERSION. It should work with any ASIC. It is adapted from PoolManager, which was made for GPUs. 
 
 -----
 
@@ -47,7 +47,7 @@ EASY PEASY SURE FIRE INSTALL INSTRUCTIONS: (but see the above note!)
 1. ssh into your miner, so you are at the command prompt. be root (if you are user, do: sudo su - ).
 1. do: wget https://github.com/starlilyth/Linux-SeedManager/archive/master.zip
 1. do: unzip master.zip
-1. cd to 'Linux-SeedManager-master' directory and run: ./install-sm.pl
+1. cd to 'Linux-SeedManager-master' directory and run: perl ./install-sm.pl
 
 Please make sure the following entries are in your cgminer.conf:
 
