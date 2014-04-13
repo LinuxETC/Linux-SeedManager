@@ -170,7 +170,7 @@ if (-o $conffile) {
     }
 
     my $iht = $in{'installht'};
-    `sudo /opt/ifmi/mcontrol installht` if ((defined $iht) && ($iht eq "installht")); 
+    `sudo /opt/ifmi/smcontrol installht` if ((defined $iht) && ($iht eq "installht")); 
 
     my $uup = $in{'uup'};
     if((defined $uup) && ($uup ne "")) {
