@@ -110,18 +110,9 @@ if (defined $geng) {
 my $npalias = $in{'npalias'};
 if (defined $npalias) {
 	my $paurl = $in{'paurl'};
-	my $acount = 0;
- 	for (keys %{$conf{pools}}) {
-		if ($paurl eq ${$conf}{pools}{$_}{url}) {
-			${$conf}{pools}{$_}{alias} = $npalias;
-			$acount++;
-		}
-	}
-	if ($acount == 0) {	
-	 	my $newa = (keys %{$conf{pools}}); $newa++; 
-	 	${$conf}{pools}{$newa}{alias} = $npalias;
-	 	${$conf}{pools}{$newa}{url} = $paurl;
-	}
+	my $poolnum = $in{'poolnum'};
+	${$conf}{pools}{$poolnum}{url} = $paurl;
+	${$conf}{pools}{$poolnum}{alias} = $npalias;
 	DumpFile($conffile, $conf); 
 	$npalias = ""; $paurl = "";
 }	
@@ -650,6 +641,7 @@ if ($ispriv eq "S") {
 	      $psput .= "<form name='palias' method='POST'>";
 				$psput .= "<input type='text' size='10' placeholder='pool alias' name='npalias'>";
 				$psput .= "<input type='hidden' name='paurl' value='$pname'>";
+				$psput .= "<input type='hidden' name='poolnum' value='$poolnum'>";
 				$psput .= "<input type='submit' value='Change'></form></td></tr>";
 			  $pusr = "unknown" if (!defined $pusr);
 	      $psput .= "<tr><td>Worker:</td><td colspan=3>" . $pusr . "</td></tr>";
