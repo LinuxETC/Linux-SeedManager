@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+	#!/usr/bin/perl
 # IFMI SeedManager installer. 
 #    This file is part of IFMI SeedManager.
 #
@@ -82,11 +82,12 @@ sub doInstall {
     	copy "sm-common.pl", $appdir;
   		copy "smgraph.pl", $appdir; 
   		copy "smnotify.pl", $appdir;
+  		copy "ssendstatus.pl", $appdir;
       copy "run-seedmanager.pl", $appdir;
     	`cp themes/* $webdir/IFMI/themes`;
     	`cp images/*.png $webdir/IFMI`;
     	`chmod 0755 $appdir/*.pl`; #because windows f's up the permissions. wtf. 
-    	`chmod 0755 $appdir/mcontrol`; #because windows
+    	`chmod 0755 $appdir/smcontrol`; #because windows
     	`chmod 0755 $cgidir/*.pl`; #because windows
 			`chown $apacheuser $appdir/seedmanager.conf` if (-f "$appdir/seedmanager.conf");
     	$instlog .= "files copied.\n";
