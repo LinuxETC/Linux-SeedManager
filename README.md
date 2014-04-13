@@ -1,9 +1,10 @@
 
-THIS IS THE GRIDSEED VERSION. It is adapted from PoolManager, which was made for GPUs. 
+THIS IS THE GRIDSEED VERSION. It should work with any ASICs. It is adapted from PoolManager, which was made for GPUs. 
 
 -----
 
-Web based pool and miner manager for Linux running CGminer and clones (sgminer, vertminer, keccak, etc). Written in perl (no php). 
+Web based pool and miner manager for Linux running CGminer and clones (sgminer, bfgminer, etc). 
+Written in perl (no php). 
 
 * Add or Remove pools, or Switch priority, from the web GUI without stopping your miner.
 * Stop/start the miner, with password protection and version/run time display.
@@ -15,20 +16,19 @@ Web based pool and miner manager for Linux running CGminer and clones (sgminer, 
 * GUI Settings Page - no need to edit a settings file
 * Email alert notifications for ASCs and Pools, including hung or stopped miner. 
 * Strategy handling, Pool Aliases, Miner Profiles
-* NEW! Password management from the GUI 
+* Password management from the GUI 
 
 See the GitHub wiki page for screenshots.
 
 -----
 
-Reqirements: Linux running cgminer or clone. 
+Reqirements: Linux running cgminer or clone. Apache2. 
 This will need the following Perl modules on clean Linux installs: 
 
 * libjson-perl
 * libyaml-perl 
 * librrds-perl
 * libproc-pid-file-perl
-
 
 and for email notifications..
 * libemail-simple-perl
