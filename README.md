@@ -6,17 +6,19 @@ THIS IS THE GRIDSEED VERSION. It should work with any ASICs. It is adapted from 
 Web based pool and miner manager for Linux running CGminer and clones (sgminer, bfgminer, etc). 
 Written in perl (no php). 
 
+Current features:
 * Add or Remove pools, or Switch priority, from the web GUI without stopping your miner.
-* Stop/start the miner, with password protection and version/run time display.
+* Miner Profiles allow you to switch algos and/or configs with ease.
+* All Mining Strategies supported, including Load Balance with quotas.
 * Stats header with Total Accepted/Rejected/Ratio, Work Util, HW errors, Uptime, Load, Free Mem.
-* ASC and Pool details pages, including native graphing with persistence. 
+* Stop/start/restart the miner from the Overview, with version and run time display.
+* ASC and Pool details pages, including native graphing with persistence.
 * Miner details page with reboot control, SSH to Host link and Configuration Editor.
-* Install script enables SSL redirection (and optional default page password) for security.
-* Easy CSS theming, with several themes included. 
-* GUI Settings Page - no need to edit a settings file
-* Email alert notifications for ASCs and Pools, including hung or stopped miner. 
-* Strategy handling, Pool Aliases, Miner Profiles
-* Password management from the GUI 
+* Email alert notifications for ASCs and Pools, including hung or stopped miner.
+* GUI settings page - easy access to your PoolManager configuration.
+* Install script enables SSL redirection for security.
+* Easy CSS theming, with several themes included.
+* Password Manager for htpasswd.
 
 See the GitHub wiki page for screenshots.
 
@@ -67,7 +69,7 @@ Sudoers Note:
 SeedManager installation attempts to modify /etc/sudoers to allow the web service to stop/start the miner application, modify files, and boot the machine, all as a specified user. This works on BAMT and most other distros. YOU SHOULD NOT NEED TO EDIT SUDOERS 99% OF THE TIME. DONT DO IT UNLESS THINGS ARE BROKEN. 
 IF THE INSTALLER FAILS you will need to modify sudoers yourself with the following: 
 
-    apacheuser ALL=(root)NOPASSWD: /opt/ifmi/mcontrol
+    apacheuser ALL=(root)NOPASSWD: /opt/ifmi/smcontrol
     Defaults:www-data rootpw
     apacheuser ALL=(root)/bin/cp
 
@@ -92,7 +94,7 @@ A2: In general, you will either have to allow access to your miner from the inte
 
 Q3: My graphs are messed up after updating. 
 
-A3: Press 'Clear All Graphs' on the settings page. It will take about ten minutes for the graphs to clear and start redrawing. 
+A3: Press 'Clear All Graphs' on the settings page. It will take about five minutes for the graphs to start redrawing. 
 
 Q4: How do I disable the default page password? I dont want it anymore.  
 
