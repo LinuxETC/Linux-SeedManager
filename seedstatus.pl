@@ -110,9 +110,18 @@ if (defined $geng) {
 my $npalias = $in{'npalias'};
 if (defined $npalias) {
 	my $paurl = $in{'paurl'};
-	my $poolnum = $in{'poolnum'};
-	${$conf}{pools}{$poolnum}{url} = $paurl;
-	${$conf}{pools}{$poolnum}{alias} = $npalias;
+	my $acount = 0;
+  for (keys %{$conf{pools}}) {
+		if ($paurl eq ${$conf}{pools}{$_}{url}) {
+			${$conf}{pools}{$_}{alias} = $npalias;
+			$acount++;
+		}
+	}
+	if ($acount == 0) {	
+		my $newa = (keys %{$conf{pools}}); $newa++;
+		${$conf}{pools}{$newa}{alias} = $npalias;
+		${$conf}{pools}{$newa}{url} = $paurl;
+	}
 	DumpFile($conffile, $conf); 
 	$npalias = ""; $paurl = "";
 }	
@@ -224,7 +233,8 @@ if (@ascs) {
 	$a1put .= "<TD class='header'>Rate</TD>";
 	$a1put .= "<TD class='header'>Pool</TD>";
 	$a1put .= "<TD class='header' colspan=2>Accept/Reject</TD>";
-	$a1put .= "<TD class='header'>HW</TD></tr>";
+	$a1put .= "<TD class='header'>HW</TD>";
+	$a1put .= "<TD class='header'>Temp</TD></tr>";
 #	$a1put .= "<TD class='header'>Frequency</TD>";
 #	$a1put .= "<TD class='header'>Serial ID</TD>";
 
@@ -350,20 +360,31 @@ if (@ascs) {
 		}
 	    $aput .= $aschwe;
 		
-		$aput .= "</TR>";
 
 
 		if ($i == $showasc)
 		{
 	    push(@ascmsg, "ASC $i has Hardware Errors") if ($ghwe > ${$conf}{monitoring}{monitor_hardware_hi});		
 			$asput .= "<td>HW Errors:</td>" . $aschwe . "</tr>"; 
-			$agimg = "<br><img src='/IFMI/graphs/asc$i.png'>";
 		}
 			
-		my $ascurl = "?";	
+		if ($i == $showasc)
+		{
+			$asput .= "<tr><td>Temp:</td><td>" . sprintf("%.1f", $ascs[$i]{'current_temp_0_c'}) . ' C</td>';
+		}
+		$aput .= '<td>';
+	
+		$aput .= sprintf("%.1f", $ascs[$i]{'current_temp_0_c'}) . ' C</td>';
 
+		if ($i == $showasc)
+		{
+			$agimg = "<br><img src='/IFMI/graphs/asc$i.png'>";
+		}
+
+		$aput .= "</TR>";
+
+		my $ascurl = "?";	
 		$ascurl .= "asc=$i";
-		
 		if ($problems)
 		{
 			$aput = '<TR><TD class="bigger"><A href="' . $ascurl . '">' . $i . '</TD><TD class=error><img src=/IFMI/error24.png></td>' . $aput;
