@@ -742,7 +742,7 @@ if ($ispriv eq "S") {
 
 print "<div id='overview'>";
 print "<table><TR><TD>";
-print "<table><TR><TD rowspan=2><div class='logo'><a href='https://github.com/starlilyth/Pi-SeedManager' target=_blank>";
+print "<table><TR><TD rowspan=2><div class='logo'><a href='https://github.com/starlilyth/Linux-SeedManager' target=_blank>";
 print "</a></div></TD>";
 print "<TD class='overviewid'>$miner_name<br><small>@ $iptxt</small></td>";
 print "<td align='right'><form method='post' name='zero'>";
@@ -886,7 +886,7 @@ given(my $x) {
         print "</td><td><table>$msput</td></tr>";
         print "<tr><td colspan=4><hr></td></tr>";
         print "<tr><td colspan=4>SeedManager v$release New releases are available at ";
-        print "<a href=https://github.com/starlilyth/Pi-SeedManager/releases target=_blank>GitHub</a>.<br>"; 
+        print "<a href=https://github.com/starlilyth/Linux-SeedManager/releases target=_blank>GitHub</a>.<br>"; 
         print "<b>If you love SeedManager, please consider donating. </b>Thank you!<br> ";
         print "BTC: <a href='bitcoin://1JBovQ1D3P4YdBntbmsu6F1CuZJGw9gnV6'><b>1JBovQ1D3P4YdBntbmsu6F1CuZJGw9gnV6</b></a> <br>LTC: <b>LdMJB36zEfTo7QLZyKDB55z9epgN78hhFb</b><br>";
         print "</table></td></tr></table>";
