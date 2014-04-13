@@ -12,7 +12,7 @@
  use YAML qw( DumpFile LoadFile );
  use CGI qw(:cgi-lib :standard);
 
-my $version = "0.9.0";
+my $version = "1.0.0";
 my $conffile = "/opt/ifmi/seedmanager.conf";
 if (! -f $conffile) { 
   my $nconf = {
