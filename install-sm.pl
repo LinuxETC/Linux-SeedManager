@@ -1,4 +1,4 @@
-	#!/usr/bin/perl
+#!/usr/bin/perl
 # IFMI SeedManager installer. 
 #    This file is part of IFMI SeedManager.
 #
