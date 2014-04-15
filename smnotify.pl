@@ -125,7 +125,7 @@ sub doEmail {
 							$pactive++;
 						}
 					}						
-			   	my $poola; my $poolnum;
+			   	my $poola; my $poolnum = 0;
 		      for (keys %{$conf{pools}}) {
 		      	if ($pname eq ${$conf}{pools}{$_}{url}) {
 		      		$poola = ${$conf}{pools}{$_}{alias};
