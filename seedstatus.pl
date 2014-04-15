@@ -271,11 +271,22 @@ if (@ascs) {
 	    $asput .= "</form></td></tr>";
 		}
 
-		my $ghashrate = $ascs[$i]{'hashrate'}; 
-		$ghashrate = $ascs[$i]{'hashavg'} if ($ghashrate eq "");
-		$ghashrate = $ascs[$i]{'hashavg'} if ($conf{display}{usehashavg} >0); 
-		$ghashrate = $ascs[$i]{'khashrate'} if ($ghashrate eq "");
-		$ghashrate = $ascs[$i]{'khashavg'} if ($conf{display}{usehashavg} >0); 
+		my $ghashrate; 
+		if ($conf{display}{usehashavg} >0) {
+			if (defined $ascs[$i]{'hashavg'}) {
+				$ghashrate = $ascs[$i]{'hashavg'};
+			} else {
+				$ghashrate = $ascs[$i]{'khashavg'}; 
+			}
+		} else {
+			if (defined $ascs[$i]{'hashrate'}) {
+				$ghashrate = $ascs[$i]{'hashrate'}; 
+				$ghashrate = $ascs[$i]{'hashavg'} if ($ghashrate eq "");
+			} else {
+				$ghashrate = $ascs[$i]{'khashrate'};
+			}
+		}		
+
 		if ($ghashrate < $conf{monitoring}{monitor_hash_lo})
 		{
 			$problems++;
