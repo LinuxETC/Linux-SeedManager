@@ -274,6 +274,8 @@ if (@ascs) {
 		my $ghashrate = $ascs[$i]{'hashrate'}; 
 		$ghashrate = $ascs[$i]{'hashavg'} if ($ghashrate eq "");
 		$ghashrate = $ascs[$i]{'hashavg'} if ($conf{display}{usehashavg} >0); 
+		$ghashrate = $ascs[$i]{'khashrate'} if ($ghashrate eq "");
+		$ghashrate = $ascs[$i]{'khashavg'} if ($conf{display}{usehashavg} >0); 
 		if ($ghashrate < $conf{monitoring}{monitor_hash_lo})
 		{
 			$problems++;
