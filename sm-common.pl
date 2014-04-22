@@ -204,7 +204,7 @@ sub getCGMinerSummary {
     $mhashav = $1;
   }
   my $mhashrate;
-  if ($res =~ m/MHS\s\ds=(\d+\.\d+),/g) {
+  if ($res =~ m/MHS\s\d+s=(\d+\.\d+),/g) {
     $mhashrate = $1;
   }
   my $mkhashav;
@@ -212,7 +212,7 @@ sub getCGMinerSummary {
     $mkhashav = $1;
   }
   my $mkhashrate;
-  if ($res =~ m/KHS\s\ds=(\d+),/g) {
+  if ($res =~ m/KHS\s\d+s=(\d+),/g) {
     $mkhashrate =$1;
   }
   my $mfoundbl;
