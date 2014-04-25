@@ -74,7 +74,7 @@ sub getCGMinerConfig {
 }
 
 sub getCGMinerASCCount {
-  my $data = &sendAPIcommand("asccount",);
+  my $data = &sendAPIcommand("pgacount",);
   while ($data =~ m/Count=(\d+)/g) {
     return $1; 
   }
@@ -151,8 +151,8 @@ sub getCGMinerPools {
 
 sub getCGMinerStats {
   my ($asc, $data, @pools) = @_;
-  my $res = &sendAPIcommand("asc",$asc);
-  if ($res =~ m/MHS\s\ds=(\d+\.\d+),/) {
+  my $res = &sendAPIcommand("devs",$asc);
+  if ($res =~ m/MHS\s\d+s=(\d+\.\d+),/) {
     $data->{'hashrate'} = $1 * 1000;
   }
   if ($res =~ m/MHS\sav=(\d+\.\d+),/) {
@@ -204,7 +204,7 @@ sub getCGMinerSummary {
     $mhashav = $1;
   }
   my $mhashrate;
-  if ($res =~ m/MHS\s\d+s=(\d+\.\d+),/g) {
+  if ($res =~ m/MHS\s\ds=(\d+\.\d+),/g) {
     $mhashrate = $1;
   }
   my $mkhashav;
@@ -212,7 +212,7 @@ sub getCGMinerSummary {
     $mkhashav = $1;
   }
   my $mkhashrate;
-  if ($res =~ m/KHS\s\d+s=(\d+),/g) {
+  if ($res =~ m/KHS\s\ds=(\d+),/g) {
     $mkhashrate =$1;
   }
   my $mfoundbl;
